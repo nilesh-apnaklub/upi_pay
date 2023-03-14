@@ -1,6 +1,7 @@
 import 'package:decimal/decimal.dart';
 import 'package:upi_pay/src/applications.dart';
 import 'package:upi_pay/src/exceptions.dart';
+import 'package:universal_io/io.dart' as io;
 
 class TransactionDetails {
   static const String _currency = 'INR';
@@ -60,12 +61,24 @@ class TransactionDetails {
   }
 
   String toString() {
-    String uri = 'upi://pay?pa=$payeeAddress'
+    String uri = '';
+    if(io.Platform.isIOS) {
+//      gpay://upi/pay?pa=test%40axisbank&pn=Test%20Merchant&mc=1234&tr=123456789&tn=test%20transaction%20note&am=10.01&cu=INR&url=https%3A%2F%2Ftest.merchant.website
+        'phonepe://upi/pay?pa=$payeeAddress'
         '&pn=${Uri.encodeComponent(payeeName)}'
         '&tr=$transactionRef'
         '&tn=${Uri.encodeComponent(transactionNote!)}'
         '&am=${amount.toString()}'
         '&cu=$currency';
+    } else  {
+      uri = 'upi://pay?pa=$payeeAddress'
+        '&pn=${Uri.encodeComponent(payeeName)}'
+        '&tr=$transactionRef'
+        '&tn=${Uri.encodeComponent(transactionNote!)}'
+        '&am=${amount.toString()}'
+        '&cu=$currency';
+    }
+
     if (url != null && url!.isNotEmpty) {
       uri += '&url=${Uri.encodeComponent(url!)}';
     }
