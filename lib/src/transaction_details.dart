@@ -64,7 +64,18 @@ class TransactionDetails {
     String uri = '';
     if(io.Platform.isIOS) {
 //      gpay://upi/pay?pa=test%40axisbank&pn=Test%20Merchant&mc=1234&tr=123456789&tn=test%20transaction%20note&am=10.01&cu=INR&url=https%3A%2F%2Ftest.merchant.website
-       uri = 'phonepe://upi/pay?pa=$payeeAddress'
+      String baseUPI = '';
+      if (upiApplication.iosBundleId == 'com.one97.paytm') {
+         baseUPI = 'paytm';
+      } else if (upiApplication.iosBundleId =='com.phonepe.PhonePeApp') {
+         baseUPI = 'phonepe';
+      } else if (upiApplication.iosBundleId == 'com.google.paisa') {
+         baseUPI = 'gpay';
+      } else {
+         baseUPI = 'upi';
+      }
+
+       uri = '$baseUPI://upi/pay?pa=$payeeAddress'
         '&pn=${Uri.encodeComponent(payeeName)}'
         '&tr=$transactionRef'
         '&tn=${Uri.encodeComponent(transactionNote!)}'
